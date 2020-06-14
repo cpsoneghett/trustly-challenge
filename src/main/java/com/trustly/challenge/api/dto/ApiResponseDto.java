@@ -1,7 +1,7 @@
 package com.trustly.challenge.api.dto;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.BeanUtils;
 
@@ -31,9 +31,9 @@ public class ApiResponseDto {
 	private Integer totalFiles;
 
 	@JsonProperty( )
-	private HashMap<String, List<FileDto>> extensions;
+	private Map<String, List<FileDto>> extensions;
 
-	public ApiResponseDto( GitHubRepositoryData ghrd, Integer totalFiles, HashMap<String, List<FileDto>> extensions ) {
+	public ApiResponseDto( GitHubRepositoryData ghrd, Integer totalFiles, Map<String, List<FileDto>> extensions ) {
 
 		BeanUtils.copyProperties( ghrd, this );
 

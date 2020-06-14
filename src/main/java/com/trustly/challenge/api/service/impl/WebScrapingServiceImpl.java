@@ -23,8 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class WebScrapingServiceImpl implements WebScrapingService {
 
-	private static String baseURL = "https://github.com";
-
 	/**
 	 * @author Christiano Soneghett
 	 * @param webUrl = the root URL that the method will extract the information
@@ -69,7 +67,7 @@ public class WebScrapingServiceImpl implements WebScrapingService {
 
 		String[] s = line.split( "href=\"" );
 		String refUrl = s[ 1 ].substring( 0, s[ 1 ].indexOf( '\"' ) );
-		String urlFinal = baseURL + refUrl;
+		String urlFinal = "https://github.com" + refUrl;
 
 		log.info( refUrl );
 

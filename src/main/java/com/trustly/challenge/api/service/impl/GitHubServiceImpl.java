@@ -14,6 +14,8 @@ import com.trustly.challenge.api.dto.ApiResponseDto;
 import com.trustly.challenge.api.dto.FileDto;
 import com.trustly.challenge.api.entity.GitHubFileData;
 import com.trustly.challenge.api.entity.GitHubRepositoryData;
+import com.trustly.challenge.api.exceptionhandler.exception.NotAGitHubRepositoryUrlException;
+import com.trustly.challenge.api.exceptionhandler.exception.RepositoryNameOrOwnerMissingException;
 import com.trustly.challenge.api.repository.GitHubRepositoryDataRepository;
 import com.trustly.challenge.api.service.GitHubService;
 
@@ -51,6 +53,21 @@ public class GitHubServiceImpl implements GitHubService {
 		}
 
 		return new ApiResponseDto( ghrd, ghrd.getRepositoryFiles().size(), extensions );
+	}
+
+	@Override
+	public void validateRepository( String repositoryUrl ) throws NotAGitHubRepositoryUrlException {
+
+		if ( !repositoryUrl.contains( "https://github.com" ) && !repositoryUrl.contains( "https://www.github.com" ) )
+			throw new NotAGitHubRepositoryUrlException();
+
+		String[] repoInfo = repositoryUrl.split( "/" );
+
+		if ( repoInfo.length == 3 )
+			throw new RepositoryNameOrOwnerMissingException( "It was not given repository owner and name" );
+		else if ( repoInfo.length == 4 )
+			throw new RepositoryNameOrOwnerMissingException( "Repository owner was given but no name for an actual repository" );
+
 	}
 
 }
