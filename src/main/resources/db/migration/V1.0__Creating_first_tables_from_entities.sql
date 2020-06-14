@@ -1,0 +1,18 @@
+CREATE TABLE gh_repository (
+	id BIGINT(20) PRIMARY KEY AUTO_INCREMENT,
+	name VARCHAR(100) NOT NULL,
+	owner VARCHAR(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE gh_file (
+	id BIGINT(20) PRIMARY KEY AUTO_INCREMENT,
+	file_name VARCHAR(100) NOT NULL,
+	extension VARCHAR(10),
+	total_lines VARCHAR(20),
+	not_empty_lines VARCHAR(20),
+	file_size VARCHAR(20) NOT NULL,
+	id_repository BIGINT(20) NOT NULL,
+	FOREIGN KEY (id_repository) REFERENCES gh_repository(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
