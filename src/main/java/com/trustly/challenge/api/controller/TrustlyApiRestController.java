@@ -35,8 +35,9 @@ public class TrustlyApiRestController {
 
 	@GetMapping( "/list-repository-files" )
 	@ApiOperation( value = "Get the information of each file from repository" )
-	@ApiResponses( value = { @ApiResponse( code = 200, message = "Repository Data obtained successfully!" ), @ApiResponse( code = 404, message = "Bad request" ) } )
-	public ResponseEntity<ApiResponseDto> listAllRepositoryFiles( @Valid @RequestBody ApiRequestDto request ) throws IOException, NotAGitHubRepositoryUrlException {
+	@ApiResponses( value = { @ApiResponse( code = 200, message = "Repository Data obtained successfully!" ), @ApiResponse( code = 400, message = "Bad request" ) } )
+	public synchronized ResponseEntity<ApiResponseDto> listAllRepositoryFiles(
+		@Valid @RequestBody ApiRequestDto request ) throws IOException, NotAGitHubRepositoryUrlException {
 
 		ghRepositoryService.validateRepository( request.getRepositoryUrl() );
 

@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.trustly.challenge.api.dto.ApiResponseDto;
 import com.trustly.challenge.api.dto.FileDto;
@@ -19,6 +18,9 @@ import com.trustly.challenge.api.exceptionhandler.exception.RepositoryNameOrOwne
 import com.trustly.challenge.api.repository.GitHubRepositoryDataRepository;
 import com.trustly.challenge.api.service.GitHubService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class GitHubServiceImpl implements GitHubService {
 
@@ -32,13 +34,15 @@ public class GitHubServiceImpl implements GitHubService {
 		return repository.find( s[ s.length - 1 ], s[ s.length - 2 ] );
 	}
 
-	@Transactional
 	public void saveAllData( GitHubRepositoryData ghrd ) {
 
+		log.info( "Saving the information into database" );
 		repository.save( ghrd );
 	}
 
 	public ApiResponseDto convertDataToApiResponse( GitHubRepositoryData ghrd ) {
+
+		log.info( "Converting gh repository data into the api response" );
 
 		HashSet<String> uniqueExtensions = ghrd.getRepositoryFiles().stream().map( GitHubFileData::getExtension ).collect( Collectors.toCollection( HashSet::new ) );
 

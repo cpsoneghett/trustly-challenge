@@ -8,8 +8,7 @@ import lombok.Getter;
 public class RepositoryNameOrOwnerMissingException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
-	
-	private final String errorMessage;
 
+	private final String errorMessage;
 
 }

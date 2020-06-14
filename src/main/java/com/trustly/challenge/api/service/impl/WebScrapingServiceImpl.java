@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.trustly.challenge.api.entity.GitHubFileData;
 import com.trustly.challenge.api.entity.GitHubRepositoryData;
@@ -30,8 +29,9 @@ public class WebScrapingServiceImpl implements WebScrapingService {
 	 * @throws IOException
 	 */
 
-	@Transactional
 	public GitHubRepositoryData getRepositoryData( String webUrl ) throws IOException {
+
+		log.info( "Initializing the scraping of the repository page" );
 
 		URL url = new URL( webUrl );
 		InputStream is = url.openStream();
