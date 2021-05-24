@@ -1,55 +1,55 @@
 package com.trustly.challenge.api.dto;
 
-import org.springframework.beans.BeanUtils;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.trustly.challenge.api.entity.GitHubFileData;
 
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FileDto {
 
-	private String fileName;
-	private String fileSize;
-	private String totalLines;
-	private String notEmptyLines;
+	private String extension;
+	private int count;
+	private long lines;
+	private long bytes;
 
-	public FileDto(GitHubFileData ghfd) {
-
-		BeanUtils.copyProperties(ghfd, this);
+	public FileDto(String extension, int count, long lines, long bytes) {
+		super();
+		this.extension = extension;
+		this.count = count;
+		this.lines = lines;
+		this.bytes = bytes;
 	}
 
-	public String getFileName() {
-		return fileName;
+	public String getExtension() {
+		return extension;
 	}
 
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
+	public void setExtension(String extension) {
+		this.extension = extension;
 	}
 
-	public String getFileSize() {
-		return fileSize;
+	public int getCount() {
+		return count;
 	}
 
-	public void setFileSize(String fileSize) {
-		this.fileSize = fileSize;
+	public void setCount(int count) {
+		this.count = count;
 	}
 
-	public String getTotalLines() {
-		return totalLines;
+	public long getLines() {
+		return lines;
 	}
 
-	public void setTotalLines(String totalLines) {
-		this.totalLines = totalLines;
+	public void setLines(long lines) {
+		this.lines = lines;
 	}
 
-	public String getNotEmptyLines() {
-		return notEmptyLines;
+	public long getBytes() {
+		return bytes;
 	}
 
-	public void setNotEmptyLines(String notEmptyLines) {
-		this.notEmptyLines = notEmptyLines;
+	public void setBytes(long bytes) {
+		this.bytes = bytes;
 	}
 
 }

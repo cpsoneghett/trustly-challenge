@@ -42,23 +42,11 @@ public class TrustlyApiRestController {
 
 		ghRepositoryService.validateRepository(request.getRepositoryUrl());
 
-		GitHubRepositoryData ghrd = ghRepositoryService.find(request.getRepositoryUrl());
+		GitHubRepositoryData repositoryData = webScrapingService.getRepositoryData(request.getRepositoryUrl());
 
-		if (ghrd != null) {
+		ApiResponseDto response = ghRepositoryService.convertDataToApiResponse(repositoryData);
 
-			ApiResponseDto response = ghRepositoryService.convertDataToApiResponse(ghrd);
-
-			return ResponseEntity.status(HttpStatus.OK).body(response);
-		} else {
-
-			GitHubRepositoryData repositoryData = webScrapingService.getRepositoryData(request.getRepositoryUrl());
-
-			ApiResponseDto response = ghRepositoryService.convertDataToApiResponse(repositoryData);
-
-			ghRepositoryService.saveAllData(repositoryData);
-
-			return ResponseEntity.status(HttpStatus.OK).body(response);
-		}
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 
 	}
 

@@ -42,10 +42,12 @@ public class WebScrapingServiceImpl implements WebScrapingService {
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
 			List<GitHubFileData> files = new ArrayList<>();
 
+			String reference = "href=\"/".concat(ghrd.getOwner()).concat("/").concat(ghrd.getName()).concat("/");
 			String line;
 
 			while ((line = br.readLine()) != null) {
-				if (line.contains("class=\"css-truncate css-truncate-target\"") && line.contains("href")) {
+				if (line.contains("<span") && line.contains(reference)
+						&& (line.contains("blob") || line.contains("tree"))) {
 					getFilesInformation(files, line, ghrd);
 				}
 			}
@@ -83,10 +85,11 @@ public class WebScrapingServiceImpl implements WebScrapingService {
 
 			try (BufferedReader br2 = new BufferedReader(new InputStreamReader(is2))) {
 
+
 				String l;
 				while ((l = br2.readLine()) != null) {
 
-					if (l.contains("class=\"text-mono f6 flex-auto pr-3 flex-order-2 flex-md-order-1 mt-2 mt-md-0\"")) {
+					if (l.contains("class=\"text-mono f6 flex-auto pr-3 flex-order-2 flex-md-order-1\"")) {
 
 						List<String> fileInfos = new ArrayList<>();
 						String[] nameAndExtension = StringUtils.getFileNameAndExtension(refUrl);
@@ -108,11 +111,10 @@ public class WebScrapingServiceImpl implements WebScrapingService {
 							log.info("Unexpected information. Need to check!");
 						}
 
-						log.info(fileInfos.toString());
+						log.info("{}", fileInfos);
 						break;
 					}
 				}
-
 			}
 		}
 		/*
@@ -126,9 +128,11 @@ public class WebScrapingServiceImpl implements WebScrapingService {
 
 			try (BufferedReader br2 = new BufferedReader(new InputStreamReader(is2))) {
 
+				String reference = "href=\"/".concat(ghrd.getOwner()).concat("/").concat(ghrd.getName()).concat("/");
+
 				String l;
 				while ((l = br2.readLine()) != null) {
-					if (l.contains("class=\"css-truncate css-truncate-target\"") && l.contains("href")) {
+					if (l.contains("<span") && l.contains(reference) && (l.contains("blob") || l.contains("tree"))) {
 						getFilesInformation(files, l, ghrd);
 					}
 				}

@@ -1,7 +1,6 @@
 package com.trustly.challenge.api.dto;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.BeanUtils;
 
@@ -11,29 +10,37 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.trustly.challenge.api.entity.GitHubRepositoryData;
 
-@JsonInclude( value = JsonInclude.Include.NON_NULL )
-@JsonIgnoreProperties( ignoreUnknown = true )
-@JsonPropertyOrder( { "repositoryName", "owner", "totalFiles", "extensions" } )
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonPropertyOrder({ "repositoryName", "owner", "totalFiles", "extensions" })
 public class ApiResponseDto {
 
-	@JsonProperty( value = "repositoryName" )
+	@JsonProperty(value = "repositoryName")
 	private String name;
 
-	@JsonProperty( )
+	@JsonProperty
 	private String owner;
 
-	@JsonProperty( )
+	@JsonProperty
 	private Integer totalFiles;
 
-	@JsonProperty( )
-	private Map<String, List<FileDto>> extensions;
+	@JsonProperty
+	private List<FileDto> data;
 
-	public ApiResponseDto( GitHubRepositoryData ghrd, Integer totalFiles, Map<String, List<FileDto>> extensions ) {
+	public ApiResponseDto(GitHubRepositoryData ghrd, Integer totalFiles, List<FileDto> data) {
 
-		BeanUtils.copyProperties( ghrd, this );
+		BeanUtils.copyProperties(ghrd, this);
 
 		this.totalFiles = totalFiles;
-		this.extensions = extensions;
+		this.data = data;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 
 }
