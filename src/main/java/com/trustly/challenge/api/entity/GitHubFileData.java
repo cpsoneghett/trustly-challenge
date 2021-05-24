@@ -14,11 +14,6 @@ import javax.persistence.Table;
 
 import org.springframework.cache.annotation.Cacheable;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@NoArgsConstructor
 @Entity
 @Table( name = "gh_file" )
 @Cacheable( "GitHubFileData" )
@@ -71,6 +66,10 @@ public class GitHubFileData {
 
 		return actualSize.toString() + " Bytes";
 
+	}
+	
+	public String getExtension() {
+		return this.extension;
 	}
 
 }

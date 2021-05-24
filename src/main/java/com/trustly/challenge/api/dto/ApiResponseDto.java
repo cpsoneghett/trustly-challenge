@@ -11,11 +11,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.trustly.challenge.api.entity.GitHubRepositoryData;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@NoArgsConstructor
 @JsonInclude( value = JsonInclude.Include.NON_NULL )
 @JsonIgnoreProperties( ignoreUnknown = true )
 @JsonPropertyOrder( { "repositoryName", "owner", "totalFiles", "extensions" } )

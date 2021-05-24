@@ -13,40 +13,43 @@ import javax.persistence.Table;
 
 import org.springframework.cache.annotation.Cacheable;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@NoArgsConstructor
 @Entity
-@Table( name = "gh_repository" )
-@Cacheable( "GitHubRepositoryData" )
+@Table(name = "gh_repository")
+@Cacheable("GitHubRepositoryData")
 public class GitHubRepositoryData {
 
 	@Id
-	@GeneratedValue( strategy = GenerationType.IDENTITY )
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column( name = "name" )
+	@Column(name = "name")
 	private String name;
 
-	@Column( name = "owner" )
+	@Column(name = "owner")
 	private String owner;
 
-	@OneToMany( mappedBy = "repository", cascade = CascadeType.ALL )
+	@OneToMany(mappedBy = "repository", cascade = CascadeType.ALL)
 	private List<GitHubFileData> repositoryFiles;
 
-	public GitHubRepositoryData( String name, String owner ) {
+	public GitHubRepositoryData(String name, String owner) {
 		super();
 		this.name = name;
 		this.owner = owner;
 	}
 
-	public GitHubRepositoryData( String url ) {
+	public GitHubRepositoryData(String url) {
 
-		String[] s = url.split( "/" );
-		this.name = s[ s.length - 1 ];
-		this.owner = s[ s.length - 2 ];
+		String[] s = url.split("/");
+		this.name = s[s.length - 1];
+		this.owner = s[s.length - 2];
+	}
+
+	public List<GitHubFileData> getRepositoryFiles() {
+		return repositoryFiles;
+	}
+
+	public void setRepositoryFiles(List<GitHubFileData> repositoryFiles) {
+		this.repositoryFiles = repositoryFiles;
 	}
 
 }

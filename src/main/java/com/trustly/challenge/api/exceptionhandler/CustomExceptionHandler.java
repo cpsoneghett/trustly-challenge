@@ -23,9 +23,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.trustly.challenge.api.exceptionhandler.exception.NotAGitHubRepositoryUrlException;
 import com.trustly.challenge.api.exceptionhandler.exception.RepositoryNameOrOwnerMissingException;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 @ControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -33,79 +30,94 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 	private MessageSource messageSource;
 
 	@Override
-	protected ResponseEntity<Object> handleHttpMessageNotReadable( HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request ) {
+	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
 
-		String userMessage = messageSource.getMessage( "invalid.message", null, LocaleContextHolder.getLocale() );
+		String userMessage = messageSource.getMessage("invalid.message", null, LocaleContextHolder.getLocale());
 		String developerMessage = ex.getCause() != null ? ex.getCause().toString() : ex.toString();
 
-		List<Error> erros = Arrays.asList( new Error( userMessage, developerMessage ) );
+		List<Error> erros = Arrays.asList(new Error(userMessage, developerMessage));
 
-		return handleExceptionInternal( ex, erros, headers, HttpStatus.BAD_REQUEST, request );
+		return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
 	}
 
 	@Override
-	protected ResponseEntity<Object> handleMethodArgumentNotValid( MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request ) {
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
 
-		List<Error> errors = createListOfErrors( ex.getBindingResult() );
+		List<Error> errors = createListOfErrors(ex.getBindingResult());
 
-		return handleExceptionInternal( ex, errors, headers, HttpStatus.BAD_REQUEST, request );
+		return handleExceptionInternal(ex, errors, headers, HttpStatus.BAD_REQUEST, request);
 	}
 
-	private List<Error> createListOfErrors( BindingResult bindingResult ) {
+	private List<Error> createListOfErrors(BindingResult bindingResult) {
 		List<Error> erros = new ArrayList<>();
 
-		for ( FieldError fieldError : bindingResult.getFieldErrors() ) {
-			String userMessage = messageSource.getMessage( fieldError, LocaleContextHolder.getLocale() );
+		for (FieldError fieldError : bindingResult.getFieldErrors()) {
+			String userMessage = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
 			String developerMessage = fieldError.toString();
 
-			erros.add( new Error( userMessage, developerMessage ) );
+			erros.add(new Error(userMessage, developerMessage));
 		}
 
 		return erros;
 	}
 
-	@ExceptionHandler( { FileNotFoundException.class } )
-	private ResponseEntity<Object> handleFileNotFoundException( FileNotFoundException ex ) {
+	@ExceptionHandler({ FileNotFoundException.class })
+	private ResponseEntity<Object> handleFileNotFoundException(FileNotFoundException ex) {
 
 		String userMessage = "Repository not found.";
 		String developerMessage = ex.getCause() != null ? ex.getCause().toString() : ex.toString();
 
-		List<Error> erros = Arrays.asList( new Error( userMessage, developerMessage ) );
+		List<Error> erros = Arrays.asList(new Error(userMessage, developerMessage));
 
-		return ResponseEntity.badRequest().body( erros );
+		return ResponseEntity.badRequest().body(erros);
 
 	}
 
-	@ExceptionHandler( { NotAGitHubRepositoryUrlException.class } )
-	private ResponseEntity<Object> handleNotAGitHubRepositoryUrlException( NotAGitHubRepositoryUrlException ex ) {
+	@ExceptionHandler({ NotAGitHubRepositoryUrlException.class })
+	private ResponseEntity<Object> handleNotAGitHubRepositoryUrlException(NotAGitHubRepositoryUrlException ex) {
 
 		String userMessage = "This is not a valid GitHub Repository. The URL must contain 'https://github.com'";
 		String developerMessage = ex.getCause() != null ? ex.getCause().toString() : ex.toString();
 
-		List<Error> erros = Arrays.asList( new Error( userMessage, developerMessage ) );
+		List<Error> erros = Arrays.asList(new Error(userMessage, developerMessage));
 
-		return ResponseEntity.badRequest().body( erros );
+		return ResponseEntity.badRequest().body(erros);
 
 	}
 
-	@ExceptionHandler( { RepositoryNameOrOwnerMissingException.class } )
-	private ResponseEntity<Object> handleRepositoryNameOrOwnerMissingException( RepositoryNameOrOwnerMissingException ex ) {
+	@ExceptionHandler({ RepositoryNameOrOwnerMissingException.class })
+	private ResponseEntity<Object> handleRepositoryNameOrOwnerMissingException(
+			RepositoryNameOrOwnerMissingException ex) {
 
 		String userMessage = ex.getErrorMessage();
 		String developerMessage = ex.getCause() != null ? ex.getCause().toString() : ex.toString();
 
-		List<Error> erros = Arrays.asList( new Error( userMessage, developerMessage ) );
+		List<Error> erros = Arrays.asList(new Error(userMessage, developerMessage));
 
-		return ResponseEntity.badRequest().body( erros );
+		return ResponseEntity.badRequest().body(erros);
 
 	}
 
-	@AllArgsConstructor
-	@Getter
 	public static class Error {
 
 		private String userMessage;
 		private String developerMessage;
+
+		public Error(String userMessage, String developerMessage) {
+			super();
+			this.userMessage = userMessage;
+			this.developerMessage = developerMessage;
+		}
+
+		public String getDeveloperMessage() {
+			return developerMessage;
+		}
+
+		public String getUserMessage() {
+			return userMessage;
+		}
 
 	}
 }

@@ -7,7 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +24,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RestController
-@RequestMapping( "/api" )
+@RequestMapping("/api")
 public class TrustlyApiRestController {
 
 	@Autowired
@@ -33,30 +33,31 @@ public class TrustlyApiRestController {
 	@Autowired
 	private GitHubService ghRepositoryService;
 
-	@GetMapping( "/list-repository-files" )
-	@ApiOperation( value = "Get the information of each file from repository" )
-	@ApiResponses( value = { @ApiResponse( code = 200, message = "Repository Data obtained successfully!" ), @ApiResponse( code = 400, message = "Bad request" ) } )
-	public synchronized ResponseEntity<ApiResponseDto> listAllRepositoryFiles(
-		@Valid @RequestBody ApiRequestDto request ) throws IOException, NotAGitHubRepositoryUrlException {
+	@PostMapping("/list-repository-files")
+	@ApiOperation(value = "Get the information of each file from repository")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Repository Data obtained successfully!"),
+			@ApiResponse(code = 400, message = "Bad request") })
+	public synchronized ResponseEntity<ApiResponseDto> listAllRepositoryFiles(@Valid @RequestBody ApiRequestDto request)
+			throws IOException, NotAGitHubRepositoryUrlException {
 
-		ghRepositoryService.validateRepository( request.getRepositoryUrl() );
+		ghRepositoryService.validateRepository(request.getRepositoryUrl());
 
-		GitHubRepositoryData ghrd = ghRepositoryService.find( request.getRepositoryUrl() );
+		GitHubRepositoryData ghrd = ghRepositoryService.find(request.getRepositoryUrl());
 
-		if ( ghrd != null ) {
+		if (ghrd != null) {
 
-			ApiResponseDto response = ghRepositoryService.convertDataToApiResponse( ghrd );
+			ApiResponseDto response = ghRepositoryService.convertDataToApiResponse(ghrd);
 
-			return ResponseEntity.status( HttpStatus.OK ).body( response );
+			return ResponseEntity.status(HttpStatus.OK).body(response);
 		} else {
 
-			GitHubRepositoryData repositoryData = webScrapingService.getRepositoryData( request.getRepositoryUrl() );
+			GitHubRepositoryData repositoryData = webScrapingService.getRepositoryData(request.getRepositoryUrl());
 
-			ApiResponseDto response = ghRepositoryService.convertDataToApiResponse( repositoryData );
+			ApiResponseDto response = ghRepositoryService.convertDataToApiResponse(repositoryData);
 
-			ghRepositoryService.saveAllData( repositoryData );
+			ghRepositoryService.saveAllData(repositoryData);
 
-			return ResponseEntity.status( HttpStatus.OK ).body( response );
+			return ResponseEntity.status(HttpStatus.OK).body(response);
 		}
 
 	}
