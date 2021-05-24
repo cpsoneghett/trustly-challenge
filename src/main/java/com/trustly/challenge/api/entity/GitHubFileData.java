@@ -63,14 +63,6 @@ public class GitHubFileData {
 
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public String getFileName() {
-		return fileName;
-	}
-
 	public String getExtension() {
 		return extension;
 	}
@@ -79,16 +71,16 @@ public class GitHubFileData {
 		return totalLines;
 	}
 
-	public String getNotEmptyLines() {
-		return notEmptyLines;
-	}
-
 	public long getFileSize() {
 		return fileSize;
 	}
 
-	public GitHubRepositoryData getRepository() {
-		return repository;
+	public String getFileName() {
+		return fileName;
+	}
+
+	public String getNotEmptyLines() {
+		return notEmptyLines;
 	}
 
 }

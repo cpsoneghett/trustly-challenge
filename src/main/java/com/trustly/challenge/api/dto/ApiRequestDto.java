@@ -12,7 +12,20 @@ public class ApiRequestDto {
 	@NotBlank(message = "Repository URL is mandatory.")
 	private String repositoryUrl;
 
+	public ApiRequestDto() {
+		super();
+	}
+
+	public ApiRequestDto(@NotBlank(message = "Repository URL is mandatory.") String repositoryUrl) {
+		super();
+		this.repositoryUrl = repositoryUrl;
+	}
+
 	public String getRepositoryUrl() {
 		return repositoryUrl;
+	}
+
+	public void setRepositoryUrl(String repositoryUrl) {
+		this.repositoryUrl = repositoryUrl;
 	}
 }

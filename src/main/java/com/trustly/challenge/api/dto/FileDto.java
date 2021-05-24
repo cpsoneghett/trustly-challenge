@@ -24,32 +24,16 @@ public class FileDto {
 		return extension;
 	}
 
-	public void setExtension(String extension) {
-		this.extension = extension;
-	}
-
 	public int getCount() {
 		return count;
-	}
-
-	public void setCount(int count) {
-		this.count = count;
 	}
 
 	public long getLines() {
 		return lines;
 	}
 
-	public void setLines(long lines) {
-		this.lines = lines;
-	}
-
 	public long getBytes() {
 		return bytes;
-	}
-
-	public void setBytes(long bytes) {
-		this.bytes = bytes;
 	}
 
 }

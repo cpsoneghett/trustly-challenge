@@ -23,16 +23,6 @@ public class GitHubRepositoryData {
 	@OneToMany(mappedBy = "repository", cascade = CascadeType.ALL)
 	private List<GitHubFileData> repositoryFiles;
 
-	public GitHubRepositoryData() {
-		super();
-	}
-
-	public GitHubRepositoryData(String name, String owner) {
-		super();
-		this.name = name;
-		this.owner = owner;
-	}
-
 	public GitHubRepositoryData(String url) {
 
 		String[] s = url.split("/");
