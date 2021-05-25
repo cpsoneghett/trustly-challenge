@@ -28,25 +28,25 @@ Response Body:
       "extension": "txt",
       "count": 4,
       "lines": 21,
-      "bytes": 133
+      "bytes": "133"
     },
     {
       "extension": "Dockerfile",
       "count": 1,
       "lines": 8,
-      "bytes": 171
+      "bytes": "171"
     },
     {
       "extension": "md",
       "count": 1,
       "lines": 1,
-      "bytes": 15
+      "bytes": "15"
     },
     {
       "extension": "png",
       "count": 1,
       "lines": 0,
-      "bytes": 669696
+      "bytes": "669696"
     }
   ]
 }
