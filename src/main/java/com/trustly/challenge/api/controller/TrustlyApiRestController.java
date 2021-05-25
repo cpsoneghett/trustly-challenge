@@ -19,6 +19,7 @@ import com.trustly.challenge.api.dto.ApiRequestDto;
 import com.trustly.challenge.api.dto.ApiResponseDto;
 import com.trustly.challenge.api.entity.GitHubRepositoryData;
 import com.trustly.challenge.api.exceptionhandler.exception.NotAGitHubRepositoryUrlException;
+import com.trustly.challenge.api.exceptionhandler.exception.TooManyRequestsException;
 import com.trustly.challenge.api.service.GitHubService;
 import com.trustly.challenge.api.service.WebScrapingService;
 
@@ -43,9 +44,9 @@ public class TrustlyApiRestController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Repository Data obtained successfully!"),
 			@ApiResponse(code = 400, message = "Bad request") })
 	public synchronized ResponseEntity<ApiResponseDto> listAllRepositoryFiles(@Valid @RequestBody ApiRequestDto request)
-			throws IOException, NotAGitHubRepositoryUrlException {
+			throws IOException, NotAGitHubRepositoryUrlException, TooManyRequestsException, InterruptedException {
 
-		log.debug("Initializing API reading of repository: {}", request.getRepositoryUrl());
+		log.info("Initializing API reading of repository: {}", request.getRepositoryUrl());
 
 		ghRepositoryService.validateRepository(request.getRepositoryUrl());
 
@@ -53,7 +54,7 @@ public class TrustlyApiRestController {
 
 		ApiResponseDto response = ghRepositoryService.convertDataToApiResponse(repositoryData);
 
-		log.debug("Finishing request!");
+		log.info("Finishing request!");
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.trustly.challenge.api.entity.GitHubFileData;
 import com.trustly.challenge.api.entity.GitHubRepositoryData;
+import com.trustly.challenge.api.exceptionhandler.exception.TooManyRequestsException;
 import com.trustly.challenge.api.service.WebScrapingService;
 import com.trustly.challenge.api.utils.StringUtils;
 
@@ -24,14 +26,19 @@ public class WebScrapingServiceImpl implements WebScrapingService {
 
 	private static final Logger log = LoggerFactory.getLogger(WebScrapingServiceImpl.class);
 
+	private static final int HTTP_TOO_MANY_REQUESTS = 429;
+
 	/**
 	 * @author Christiano Soneghett
 	 * @param webUrl = the root URL that the method will extract the information
 	 * @return a list of all files from a GitHub repository
 	 * @throws IOException
+	 * @throws InterruptedException
+	 * @throws TooManyRequestsException
 	 */
 	@Cacheable(value = "getRepositoryData")
-	public GitHubRepositoryData getRepositoryData(String webUrl) throws IOException {
+	public GitHubRepositoryData getRepositoryData(String webUrl)
+			throws IOException, TooManyRequestsException, InterruptedException {
 
 		log.info("Initializing the scraping of the repository page");
 
@@ -68,7 +75,7 @@ public class WebScrapingServiceImpl implements WebScrapingService {
 	}
 
 	private static void getFilesInformation(List<GitHubFileData> files, String line, GitHubRepositoryData ghrd)
-			throws IOException {
+			throws IOException, TooManyRequestsException, InterruptedException {
 
 		String[] s = line.split("href=\"");
 		String refUrl = s[1].substring(0, s[1].indexOf('\"'));
@@ -82,9 +89,12 @@ public class WebScrapingServiceImpl implements WebScrapingService {
 		 */
 		if (!urlFinal.contains("/tree/")) {
 			URL subUrl = new URL(urlFinal);
-			InputStream is2 = subUrl.openStream();
+			HttpURLConnection con = (HttpURLConnection) subUrl.openConnection();
 
-			try (BufferedReader br2 = new BufferedReader(new InputStreamReader(is2))) {
+			if (con.getResponseCode() == HTTP_TOO_MANY_REQUESTS)
+				throw new TooManyRequestsException("TOO MANY REQUESTS WERE MADE TO THE URL: " + subUrl);
+
+			try (BufferedReader br2 = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
 
 				String l;
 				while ((l = br2.readLine()) != null) {
@@ -115,6 +125,8 @@ public class WebScrapingServiceImpl implements WebScrapingService {
 						break;
 					}
 				}
+			} finally {
+				con.disconnect();
 			}
 		}
 		/*
@@ -124,9 +136,12 @@ public class WebScrapingServiceImpl implements WebScrapingService {
 		else if (urlFinal.contains("/tree/")) {
 
 			URL subUrl = new URL(urlFinal);
-			InputStream is2 = subUrl.openStream();
+			HttpURLConnection con = (HttpURLConnection) subUrl.openConnection();
 
-			try (BufferedReader br2 = new BufferedReader(new InputStreamReader(is2))) {
+			if (con.getResponseCode() == HTTP_TOO_MANY_REQUESTS)
+				throw new TooManyRequestsException("TOO MANY REQUESTS WERE MADE TO THE URL: " + subUrl);
+
+			try (BufferedReader br2 = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
 
 				String reference = "href=\"/".concat(ghrd.getOwner()).concat("/").concat(ghrd.getName()).concat("/");
 
@@ -136,6 +151,11 @@ public class WebScrapingServiceImpl implements WebScrapingService {
 						getFilesInformation(files, l, ghrd);
 					}
 				}
+			} catch (TooManyRequestsException e) {
+				log.warn(e.getMessage());
+				Thread.sleep(5000);
+			} finally {
+				con.disconnect();
 			}
 		}
 
