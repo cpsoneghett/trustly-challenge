@@ -9,5 +9,7 @@ public interface GitHubService {
 	public ApiResponseDto convertDataToApiResponse(GitHubRepositoryData ghrd);
 
 	public void validateRepository(String repositoryUrl) throws NotAGitHubRepositoryUrlException;
+	
+	public void clearCache();
 
 }

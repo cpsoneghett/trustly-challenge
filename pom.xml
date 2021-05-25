@@ -37,6 +37,7 @@
 		</dependency>
 
 		<dependency>
+
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
@@ -74,8 +75,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-ehcache</artifactId>
+			<groupId>org.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
 		</dependency>
 
 	</dependencies>

@@ -4,9 +4,12 @@ import java.io.IOException;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +30,8 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping("/api")
 public class TrustlyApiRestController {
 
+	private static final Logger log = LoggerFactory.getLogger(TrustlyApiRestController.class);
+
 	@Autowired
 	private WebScrapingService webScrapingService;
 
@@ -40,14 +45,25 @@ public class TrustlyApiRestController {
 	public synchronized ResponseEntity<ApiResponseDto> listAllRepositoryFiles(@Valid @RequestBody ApiRequestDto request)
 			throws IOException, NotAGitHubRepositoryUrlException {
 
+		log.debug("Initializing API reading of repository: {}", request.getRepositoryUrl());
+
 		ghRepositoryService.validateRepository(request.getRepositoryUrl());
 
 		GitHubRepositoryData repositoryData = webScrapingService.getRepositoryData(request.getRepositoryUrl());
 
 		ApiResponseDto response = ghRepositoryService.convertDataToApiResponse(repositoryData);
 
+		log.debug("Finishing request!");
+
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 
+	}
+
+	@GetMapping("/clear/cache")
+	@ApiOperation(value = "Clear out the cache of the scraping method")
+	public void clearCache() {
+		ghRepositoryService.clearCache();
+		log.info("!! CACHE CLEARED !!");
 	}
 
 }

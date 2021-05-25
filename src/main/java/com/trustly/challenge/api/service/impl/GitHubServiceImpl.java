@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import com.trustly.challenge.api.dto.ApiResponseDto;
@@ -21,6 +23,9 @@ import com.trustly.challenge.api.service.GitHubService;
 public class GitHubServiceImpl implements GitHubService {
 
 	private static final Logger log = LoggerFactory.getLogger(GitHubServiceImpl.class);
+
+	@Autowired
+	private CacheManager cacheManager;
 
 	public ApiResponseDto convertDataToApiResponse(GitHubRepositoryData ghrd) {
 
@@ -65,6 +70,12 @@ public class GitHubServiceImpl implements GitHubService {
 		else if (repoInfo.length == 4)
 			throw new RepositoryNameOrOwnerMissingException(
 					"Repository owner was given but no name for an actual repository");
+
+	}
+
+	@Override
+	public void clearCache() {
+		cacheManager.getCacheNames().stream().forEach(cacheName -> cacheManager.getCache(cacheName).clear());
 
 	}
 

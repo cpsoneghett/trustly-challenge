@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.trustly.challenge.api.entity.GitHubFileData;
@@ -29,7 +30,7 @@ public class WebScrapingServiceImpl implements WebScrapingService {
 	 * @return a list of all files from a GitHub repository
 	 * @throws IOException
 	 */
-
+	@Cacheable(value = "getRepositoryData")
 	public GitHubRepositoryData getRepositoryData(String webUrl) throws IOException {
 
 		log.info("Initializing the scraping of the repository page");
@@ -84,7 +85,6 @@ public class WebScrapingServiceImpl implements WebScrapingService {
 			InputStream is2 = subUrl.openStream();
 
 			try (BufferedReader br2 = new BufferedReader(new InputStreamReader(is2))) {
-
 
 				String l;
 				while ((l = br2.readLine()) != null) {
