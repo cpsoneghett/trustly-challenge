@@ -52,7 +52,7 @@ public class GitHubServiceImpl implements GitHubService {
 				count++;
 			}
 
-			data.add(new FileDto(e, count, lines, bytes));
+			data.add(new FileDto(e, count, lines, bytes.toString()));
 		}
 
 		return new ApiResponseDto(ghrd, ghrd.getRepositoryFiles().size(), data);

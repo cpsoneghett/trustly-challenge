@@ -2,7 +2,6 @@ package com.trustly.challenge.api.service.impl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -43,11 +42,11 @@ public class WebScrapingServiceImpl implements WebScrapingService {
 		log.info("Initializing the scraping of the repository page");
 
 		URL url = new URL(webUrl);
-		InputStream is = url.openStream();
+		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
 		GitHubRepositoryData ghrd = new GitHubRepositoryData(webUrl);
 
-		try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
 			List<GitHubFileData> files = new ArrayList<>();
 
 			String reference = "href=\"/".concat(ghrd.getOwner()).concat("/").concat(ghrd.getName()).concat("/");
@@ -62,8 +61,8 @@ public class WebScrapingServiceImpl implements WebScrapingService {
 
 			ghrd.setRepositoryFiles(files);
 
+			con.disconnect();
 			return ghrd;
-
 		} catch (MalformedURLException e) {
 			log.error(e.toString());
 			throw new MalformedURLException("URL is malformed!!");

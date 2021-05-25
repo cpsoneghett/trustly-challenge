@@ -7,14 +7,17 @@ This is an API that returns the total number of lines and the total number of by
 ## 2. API Contract
 The API contract is defined this way:
 
-Request:
+Endpoint:
+POST - /api/list-repository-files
+
+Request Body:
 ``` json
 {
     "repositoryUrl" : "https://github.com/cpsoneghett/test-scraping"
 }
 ```
 
-Response:
+Response Body:
 ``` json
 {
   "repositoryName": "test-scraping",
