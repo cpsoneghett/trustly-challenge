@@ -1,5 +1,6 @@
 package com.trustly.challenge.api.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -39,7 +40,7 @@ public class GitHubServiceImpl implements GitHubService {
 		for (String e : uniqueExtensions) {
 
 			long lines = 0L;
-			long bytes = 0L;
+			BigDecimal bytes = BigDecimal.ZERO;
 			int count = 0;
 
 			List<GitHubFileData> repositoryFilesFiltered = ghrd.getRepositoryFiles().stream()
@@ -47,7 +48,7 @@ public class GitHubServiceImpl implements GitHubService {
 
 			for (GitHubFileData gfd : repositoryFilesFiltered) {
 				lines += Long.parseLong(gfd.getTotalLines());
-				bytes += gfd.getFileSize();
+				bytes = bytes.add(gfd.getFileSize());
 				count++;
 			}
 

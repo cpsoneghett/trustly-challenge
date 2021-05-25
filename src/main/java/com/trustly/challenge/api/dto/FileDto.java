@@ -1,5 +1,7 @@
 package com.trustly.challenge.api.dto;
 
+import java.math.BigDecimal;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -10,9 +12,9 @@ public class FileDto {
 	private String extension;
 	private int count;
 	private long lines;
-	private long bytes;
+	private BigDecimal bytes;
 
-	public FileDto(String extension, int count, long lines, long bytes) {
+	public FileDto(String extension, int count, long lines, BigDecimal bytes) {
 		super();
 		this.extension = extension;
 		this.count = count;
@@ -32,7 +34,7 @@ public class FileDto {
 		return lines;
 	}
 
-	public long getBytes() {
+	public BigDecimal getBytes() {
 		return bytes;
 	}
 

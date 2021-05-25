@@ -19,7 +19,7 @@ public class TrustlyChallengeApplication {
 	@Scheduled(fixedRateString = "${cache.cleaning.default.time}")
 	@CacheEvict(allEntries = true, value = { "getRepositoryData" })
 	public void clearCache() {
-		//System.out.println(">>> CACHE CLEARED <<<");
+		//Just clean cache
 	}
 
 }

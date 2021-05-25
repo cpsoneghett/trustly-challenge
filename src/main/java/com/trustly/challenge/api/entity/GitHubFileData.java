@@ -1,5 +1,7 @@
 package com.trustly.challenge.api.entity;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -26,7 +28,7 @@ public class GitHubFileData {
 
 	private String notEmptyLines;
 
-	private long fileSize;
+	private BigDecimal fileSize;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_repository")
@@ -47,17 +49,17 @@ public class GitHubFileData {
 		this.fileSize = getSizeInBytes(fileSize);
 	}
 
-	private long getSizeInBytes(String fileSize) {
+	private BigDecimal getSizeInBytes(String fileSize) {
 
 		String[] s = fileSize.split(" ");
-		long actualSize = Long.parseLong(s[0]);
+		BigDecimal actualSize = new BigDecimal(s[0]);
 
 		if (s[1].contains("K"))
-			actualSize = actualSize * 1024;
+			actualSize = actualSize.multiply(new BigDecimal(1024));
 		else if (s[1].contains("M"))
-			actualSize = actualSize * (1024 * 1024);
+			actualSize = actualSize.multiply(new BigDecimal(1024 * 1024));
 		else if (s[1].contains("G"))
-			actualSize = actualSize * (1024 * 1024 * 1024);
+			actualSize = actualSize.multiply(new BigDecimal(1024 * 1024 * 1024));
 
 		return actualSize;
 
@@ -71,7 +73,7 @@ public class GitHubFileData {
 		return totalLines;
 	}
 
-	public long getFileSize() {
+	public BigDecimal getFileSize() {
 		return fileSize;
 	}
 
