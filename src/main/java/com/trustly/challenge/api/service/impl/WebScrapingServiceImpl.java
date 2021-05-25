@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.trustly.challenge.api.entity.GitHubFileData;
 import com.trustly.challenge.api.entity.GitHubRepositoryData;
+import com.trustly.challenge.api.exceptionhandler.exception.NonExistentOrPrivateRepositoryException;
 import com.trustly.challenge.api.exceptionhandler.exception.TooManyRequestsException;
 import com.trustly.challenge.api.service.WebScrapingService;
 import com.trustly.challenge.api.utils.StringUtils;
@@ -34,10 +35,11 @@ public class WebScrapingServiceImpl implements WebScrapingService {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 * @throws TooManyRequestsException
+	 * @throws NonExistentOrPrivateRepositoryException
 	 */
 	@Cacheable(value = "getRepositoryData")
-	public GitHubRepositoryData getRepositoryData(String webUrl)
-			throws IOException, TooManyRequestsException, InterruptedException {
+	public GitHubRepositoryData getRepositoryData(String webUrl) throws IOException, TooManyRequestsException,
+			InterruptedException, NonExistentOrPrivateRepositoryException {
 
 		log.info("Initializing the scraping of the repository page");
 
@@ -68,6 +70,12 @@ public class WebScrapingServiceImpl implements WebScrapingService {
 			throw new MalformedURLException("URL is malformed!!");
 		} catch (IOException e) {
 			log.error(e.toString());
+
+			if (e.getMessage().equals(webUrl)) {
+				throw new NonExistentOrPrivateRepositoryException(
+						"This repository might be private or non existent. Please review your request");
+			}
+
 			throw new IOException();
 		}
 

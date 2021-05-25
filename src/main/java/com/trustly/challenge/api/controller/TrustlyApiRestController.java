@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.trustly.challenge.api.dto.ApiRequestDto;
 import com.trustly.challenge.api.dto.ApiResponseDto;
 import com.trustly.challenge.api.entity.GitHubRepositoryData;
+import com.trustly.challenge.api.exceptionhandler.exception.NonExistentOrPrivateRepositoryException;
 import com.trustly.challenge.api.exceptionhandler.exception.NotAGitHubRepositoryUrlException;
 import com.trustly.challenge.api.exceptionhandler.exception.TooManyRequestsException;
 import com.trustly.challenge.api.service.GitHubService;
@@ -44,7 +45,8 @@ public class TrustlyApiRestController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Repository Data obtained successfully!"),
 			@ApiResponse(code = 400, message = "Bad request") })
 	public synchronized ResponseEntity<ApiResponseDto> listAllRepositoryFiles(@Valid @RequestBody ApiRequestDto request)
-			throws IOException, NotAGitHubRepositoryUrlException, TooManyRequestsException, InterruptedException {
+			throws IOException, NotAGitHubRepositoryUrlException, TooManyRequestsException, InterruptedException,
+			NonExistentOrPrivateRepositoryException {
 
 		log.info("Initializing API reading of repository: {}", request.getRepositoryUrl());
 

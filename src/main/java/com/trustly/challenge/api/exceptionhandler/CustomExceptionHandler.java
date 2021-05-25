@@ -1,6 +1,7 @@
 package com.trustly.challenge.api.exceptionhandler;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.trustly.challenge.api.exceptionhandler.exception.NonExistentOrPrivateRepositoryException;
 import com.trustly.challenge.api.exceptionhandler.exception.NotAGitHubRepositoryUrlException;
 import com.trustly.challenge.api.exceptionhandler.exception.RepositoryNameOrOwnerMissingException;
 
@@ -20,6 +22,18 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private MessageSource messageSource;
+
+	@ExceptionHandler({ MalformedURLException.class })
+	private ResponseEntity<Object> handleMalformedURLException(MalformedURLException ex) {
+
+		String userMessage = messageSource.getMessage("malformed.url", null, LocaleContextHolder.getLocale());
+		String developerMessage = ex.toString();
+
+		List<Error> erros = Arrays.asList(new Error(userMessage, developerMessage));
+
+		return ResponseEntity.badRequest().body(erros);
+
+	}
 
 	@ExceptionHandler({ InterruptedException.class })
 	private ResponseEntity<Object> handleInterruptedException(InterruptedException ex) {
@@ -60,6 +74,19 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler({ RepositoryNameOrOwnerMissingException.class })
 	private ResponseEntity<Object> handleRepositoryNameOrOwnerMissingException(
 			RepositoryNameOrOwnerMissingException ex) {
+
+		String userMessage = ex.getErrorMessage();
+		String developerMessage = ex.getCause() != null ? ex.getCause().toString() : ex.toString();
+
+		List<Error> erros = Arrays.asList(new Error(userMessage, developerMessage));
+
+		return ResponseEntity.badRequest().body(erros);
+
+	}
+
+	@ExceptionHandler({ NonExistentOrPrivateRepositoryException.class })
+	private ResponseEntity<Object> handleNonExistentOrPrivateRepositoryException(
+			NonExistentOrPrivateRepositoryException ex) {
 
 		String userMessage = ex.getErrorMessage();
 		String developerMessage = ex.getCause() != null ? ex.getCause().toString() : ex.toString();
